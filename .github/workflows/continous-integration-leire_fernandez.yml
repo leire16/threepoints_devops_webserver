@@ -40,3 +40,4 @@ jobs:
       # Paso 6: Construcción de la imagen Docker
       - name: Build docker image
         run: docker build . --file Dockerfile --tag devops_ws:$(date +%s)
+        
