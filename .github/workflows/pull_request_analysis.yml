@@ -21,17 +21,30 @@ jobs:
         id: check_file
         uses: andstor/file-existence-action@v1
         with:
-          files: allow_pull_request.txt
+         files: allow_pull_request.txt
 
-      # Paso 3: Definir la variable 'allow_pull' según si el archivo existe
+    # Paso de depuración: Mostrar todas las salidas
+      - name: Mostrar todas las salidas
+        run: |
+         echo "Salidas del paso de comprobación de archivo:"
+         echo "${{ toJson(steps.check_file.outputs) }}"
+
+
+        # Paso 3: Definir la variable 'allow_pull' según si el archivo existe
       - name: Definir variable allow_pull
         id: set_allow_variable
         run: |
-          if [ "${{ steps.check_file.outputs.exists }}" == "true" ]; then
+         echo "El valor de files_exists es: ${{ steps.check_file.outputs.files_exists }}"
+         if [ "${{ steps.check_file.outputs.files_exists }}" == "true" ]; then
             echo "allow_pull=true" >> $GITHUB_ENV
-          else
+         else
             echo "allow_pull=false" >> $GITHUB_ENV
-          fi
+         fi
+
+      # Imprimir el valor de allow_pull
+      - name: Imprimir valor de allow_pull
+        run: echo "El valor de allo_pull es:" ${{ env.allow_pull }}
+
 
       # Paso 4: Permitir la build si allow_pull es True
       - name: Permitiendo Pull Request
