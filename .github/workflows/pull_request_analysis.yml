@@ -1,0 +1,54 @@
+name: Pull Request Analysis
+
+on:
+  pull_request:
+    branches:
+      - master
+      
+jobs:
+  analyze_pull_request:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Paso 1: Analizar el código
+      - name: Análisis de SAST
+        run: echo "Realizando análisis de SAST"
+
+      # Paso 2: Comprobar si el archivo allow_pull_request.txt existe
+      - name: Comprobar archivo allow_pull_request.txt
+        id: check_file
+        uses: andstor/file-existence-action@v1
+        with:
+          files: allow_pull_request.txt
+
+      # Paso 3: Definir la variable 'allow_pull' según si el archivo existe
+      - name: Definir variable allow_pull
+        id: set_allow_variable
+        run: |
+          if [ "${{ steps.check_file.outputs.exists }}" == "true" ]; then
+            echo "allow_pull=true" >> $GITHUB_ENV
+          else
+            echo "allow_pull=false" >> $GITHUB_ENV
+          fi
+
+      # Paso 4: Permitir la build si allow_pull es True
+      - name: Permitiendo Pull Request
+        if: env.allow_pull == 'true'
+        run: echo "Permitiendo Pull Request"
+
+      # Paso 5: Impedir la build si allow_pull es False
+      - name: Impidiendo Pull Request
+        if: env.allow_pull == 'false'
+        run: |
+          echo "Build fallida. Impidiendo Pull Request"
+          exit 1
+
+      # Guardar el archivo como artefacto si existe
+      - name: Guardar archivo allow_pull_request.txt como artefacto
+        if: env.allow_pull == 'true'
+        uses: actions/upload-artifact@v3
+        with:
+          name: allow_pull_request_file
+          path: allow_pull_request.txt
