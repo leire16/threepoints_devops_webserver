@@ -33,6 +33,11 @@ jobs:
             echo "allow_pull=false" >> $GITHUB_ENV
           fi
 
+      # Imprimir el valor de allow_pull
+      - name: Imprimir valor de allow_pull
+        run: echo "El valor de allo_pull es:" ${{ env.allow_pull }}
+
+
       # Paso 4: Permitir la build si allow_pull es True
       - name: Permitiendo Pull Request
         if: env.allow_pull == 'true'
