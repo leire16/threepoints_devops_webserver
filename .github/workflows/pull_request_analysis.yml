@@ -23,12 +23,19 @@ jobs:
         with:
          files: allow_pull_request.txt
 
+    # Paso de depuración: Mostrar todas las salidas
+      - name: Mostrar todas las salidas
+        run: |
+         echo "Salidas del paso de comprobación de archivo:"
+         echo "${{ toJson(steps.check_file.outputs) }}"
+
+
         # Paso 3: Definir la variable 'allow_pull' según si el archivo existe
       - name: Definir variable allow_pull
         id: set_allow_variable
         run: |
-         echo "El valor de exists es: ${{ steps.check_file.outputs.exists }}"
-         if [ "${{ steps.check_file.outputs.exists }}" == "true" ]; then
+         echo "El valor de exists es: " ${{ steps.check_file.outputs.exists }}
+         if [ ${{ steps.check_file.outputs.exists }} == "true" ]; then
             echo "allow_pull=true" >> $GITHUB_ENV
          else
             echo "allow_pull=false" >> $GITHUB_ENV
