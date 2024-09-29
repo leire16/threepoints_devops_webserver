@@ -34,8 +34,8 @@ jobs:
       - name: Definir variable allow_pull
         id: set_allow_variable
         run: |
-         echo "El valor de exists es: " ${{ steps.check_file.outputs.exists }}
-         if [ ${{ steps.check_file.outputs.exists }} == "true" ]; then
+         echo "El valor de files_exists es: ${{ steps.check_file.outputs.files_exists }}"
+         if [ "${{ steps.check_file.outputs.files_exists }}" == "true" ]; then
             echo "allow_pull=true" >> $GITHUB_ENV
          else
             echo "allow_pull=false" >> $GITHUB_ENV
